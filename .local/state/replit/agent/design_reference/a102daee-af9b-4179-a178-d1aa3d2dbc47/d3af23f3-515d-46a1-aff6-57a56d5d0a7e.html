@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PreHire - Candidate Smart Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    'inter': ['Inter', 'sans-serif'],
+                },
+                colors: {
+                    'primary': '#8B7CF6',
+                    'primary-dark': '#7C3AED',
+                    'accent': '#F3F4F6',
+                    'text-primary': '#374151',
+                    'text-secondary': '#6B7280',
+                    'success': '#10B981'
+                },
+                animation: {
+                    'fade-in': 'fadeIn 0.5s ease-in-out',
+                    'slide-up': 'slideUp 0.3s ease-out',
+                    'pulse-subtle': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                }
+            }
+        }
+    };
+    </script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .chat-message {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #8B7CF6;
+            margin: 0 2px;
+            animation: loading 1.4s infinite both;
+        }
+        
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter">
+    <!-- @COMPONENT: Header [Navigation bar with logo and user menu] -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-2xl font-bold text-primary">PreHire</h1>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">About Us</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">Clients</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">Pricing</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">FAQ</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">Contact Us</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="p-2 text-text-secondary hover:text-text-primary transition-colors">
+                    <i class="fas fa-bell text-xl"></i>
+                </button>
+                <button class="p-2 text-text-secondary hover:text-text-primary transition-colors">
+                    <i class="fas fa-search text-xl"></i>
+                </button>
+                <!-- Mock profile image from Unsplash -->
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=32&h=32" alt="User Profile" class="w-8 h-8 rounded-full" data-mock="true">
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <div class="flex h-screen">
+        <!-- @COMPONENT: Sidebar [Chat history and navigation] -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <div class="p-4 space-y-3">
+                <button id="newChatBtn" class="w-full flex items-center space-x-3 px-4 py-3 text-left text-text-primary bg-accent hover:bg-gray-200 rounded-lg transition-colors">
+                    <i class="fas fa-edit text-text-secondary"></i>
+                    <span class="font-medium">New Chat</span>
+                </button>
+                
+                <button class="w-full flex items-center space-x-3 px-4 py-3 text-left text-text-secondary hover:text-text-primary hover:bg-accent rounded-lg transition-colors">
+                    <i class="fas fa-search text-text-secondary"></i>
+                    <span>Search Chat</span>
+                </button>
+            </div>
+            
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto p-4">
+                <h3 class="text-sm font-medium text-text-secondary mb-3">Recent Searches</h3>
+                <div class="space-y-2" id="chatHistory">
+                    <!-- Chat history items will be populated here -->
+                    <div class="p-3 hover:bg-accent rounded-lg cursor-pointer transition-colors" data-mock="true">
+                        <p class="text-sm font-medium text-text-primary truncate">Java Developer Search</p>
+                        <p class="text-xs text-text-secondary">2 hours ago</p>
+                    </div>
+                    <div class="p-3 hover:bg-accent rounded-lg cursor-pointer transition-colors" data-mock="true">
+                        <p class="text-sm font-medium text-text-primary truncate">UX Designer Remote</p>
+                        <p class="text-xs text-text-secondary">1 day ago</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- @END_COMPONENT: Sidebar -->
+
+        <!-- @COMPONENT: MainContent [Chat interface and results] -->
+        <main class="flex-1 flex flex-col bg-accent">
+            <!-- Chat Messages Area -->
+            <div class="flex-1 overflow-y-auto p-6" id="chatArea">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Welcome State -->
+                    <div id="welcomeState" class="text-center py-20">
+                        <h2 class="text-3xl font-bold text-text-primary mb-4">Candidate Smart Search</h2>
+                        <p class="text-text-secondary mb-8">Type your requirements and we'll narrow down the best profiles for you</p>
+                    </div>
+
+                    <!-- Chat Messages Container -->
+                    <div id="messagesContainer" class="space-y-6 mb-6">
+                        <!-- Messages will be dynamically added here -->
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="hidden text-center py-4">
+                        <div class="inline-flex items-center space-x-2 text-primary">
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span class="text-sm">Analyzing requirements and searching candidates...</span>
+                        </div>
+                    </div>
+
+                    <!-- Results Container -->
+                    <div id="resultsContainer" class="hidden">
+                        <div class="mb-6">
+                            <p class="text-text-primary font-medium" id="resultsCount">We found 42 potential matches for your query.</p>
+                        </div>
+                        
+                        <!-- @MAP: candidates.map(candidate => ( -->
+                        <div id="candidatesList" class="space-y-4">
+                            <!-- Candidate cards will be dynamically populated -->
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-gray-200 bg-white p-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="queryInput"
+                            placeholder="Type your requirements and we'll narrow down the best profiles for you"
+                            class="w-full px-4 py-4 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-text-primary placeholder-text-secondary"
+                            data-implementation="Should connect to AI processing pipeline"
+                        >
+                        <button 
+                            id="sendBtn"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-primary hover:text-primary-dark transition-colors"
+                            data-event="click:handleSendMessage"
+                        >
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- @END_COMPONENT: MainContent -->
+    </div>
+
+    <script>
+        // @STATE: currentChat:object = null, isLoading:boolean = false, candidates:array = []
+        
+        (function() {
+            // Mock candidate data
+            const mockCandidates = [
+                {
+                    id: 1,
+                    name: "Ananya Mehra",
+                    title: "Senior Java Developer",
+                    location: "Pune",
+                    experience: "5 years",
+                    phone: "+91 63547XXXX",
+                    matchScore: 95,
+                    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b890?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150",
+                    skills: ["Java", "Spring Boot", "Microservices", "AWS"],
+                    isTop: true
+                },
+                {
+                    id: 2,
+                    name: "Rahul Sharma",
+                    title: "Java Full Stack Developer",
+                    location: "Bangalore",
+                    experience: "6 years",
+                    phone: "+91 98547XXXX",
+                    matchScore: 92,
+                    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150",
+                    skills: ["Java", "React", "Node.js", "MongoDB"]
+                },
+                {
+                    id: 3,
+                    name: "Priya Patel",
+                    title: "Backend Java Developer",
+                    location: "Mumbai",
+                    experience: "4 years",
+                    phone: "+91 88547XXXX",
+                    matchScore: 88,
+                    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150",
+                    skills: ["Java", "Spring", "MySQL", "Docker"]
+                },
+                {
+                    id: 4,
+                    name: "Arjun Singh",
+                    title: "Java Software Engineer",
+                    location: "Hyderabad", 
+                    experience: "5 years",
+                    phone: "+91 77547XXXX",
+                    matchScore: 85,
+                    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150",
+                    skills: ["Java", "Hibernate", "REST APIs", "Jenkins"]
+                }
+            ];
+
+            const elements = {
+                queryInput: document.getElementById('queryInput'),
+                sendBtn: document.getElementById('sendBtn'),
+                messagesContainer: document.getElementById('messagesContainer'),
+                welcomeState: document.getElementById('welcomeState'),
+                loadingState: document.getElementById('loadingState'),
+                resultsContainer: document.getElementById('resultsContainer'),
+                candidatesList: document.getElementById('candidatesList'),
+                resultsCount: document.getElementById('resultsCount'),
+                newChatBtn: document.getElementById('newChatBtn'),
+                chatHistory: document.getElementById('chatHistory')
+            };
+
+            let chatState = {
+                messages: [],
+                isLoading: false,
+                currentResults: []
+            };
+
+            // Initialize event listeners
+            function init() {
+                elements.sendBtn.addEventListener('click', handleSendMessage);
+                elements.queryInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSendMessage();
+                    }
+                });
+                elements.newChatBtn.addEventListener('click', handleNewChat);
+            }
+
+            function handleSendMessage() {
+                const query = elements.queryInput.value.trim();
+                if (!query || chatState.isLoading) return;
+
+                // Add user message
+                addMessage('user', query);
+                elements.queryInput.value = '';
+                
+                // Show loading state
+                showLoadingState();
+                
+                // Hide welcome state
+                elements.welcomeState.style.display = 'none';
+                
+                // Simulate API processing delay
+                setTimeout(() => {
+                    processQuery(query);
+                }, 2000);
+            }
+
+            function addMessage(type, content) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message flex ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="max-w-xs lg:max-w-md px-4 py-3 rounded-xl ${
+                        type === 'user' 
+                            ? 'bg-primary text-white' 
+                            : 'bg-white text-text-primary border border-gray-200'
+                    }">
+                        <p class="text-sm">${content}</p>
+                    </div>
+                `;
+                
+                elements.messagesContainer.appendChild(messageDiv);
+                chatState.messages.push({ type, content });
+                
+                // Scroll to bottom
+                messageDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function showLoadingState() {
+                chatState.isLoading = true;
+                elements.loadingState.classList.remove('hidden');
+                elements.resultsContainer.classList.add('hidden');
+            }
+
+            function hideLoadingState() {
+                chatState.isLoading = false;
+                elements.loadingState.classList.add('hidden');
+            }
+
+            function processQuery(query) {
+                // TODO: Implement actual API call to Hugging Face or similar service
+                // This simulates the AI processing and candidate matching
+                
+                // Hide loading state
+                hideLoadingState();
+                
+                // Add bot response
+                addMessage('bot', `I'll help you find the best Java developers. Let me search our candidate database...`);
+                
+                // Filter and rank candidates based on query
+                const filteredCandidates = mockCandidates.filter(candidate => {
+                    const queryLower = query.toLowerCase();
+                    return (
+                        candidate.title.toLowerCase().includes('java') ||
+                        candidate.skills.some(skill => skill.toLowerCase().includes('java'))
+                    );
+                });
+                
+                // Show results
+                setTimeout(() => {
+                    showResults(filteredCandidates, query);
+                }, 1000);
+            }
+
+            function showResults(candidates, query) {
+                chatState.currentResults = candidates;
+                
+                // Update results count
+                elements.resultsCount.textContent = `We found ${candidates.length} potential matches for your query.`;
+                
+                // Clear previous results
+                elements.candidatesList.innerHTML = '';
+                
+                // Populate candidate cards
+                candidates.forEach((candidate, index) => {
+                    const candidateCard = createCandidateCard(candidate);
+                    elements.candidatesList.appendChild(candidateCard);
+                    
+                    // Stagger animation
+                    setTimeout(() => {
+                        candidateCard.style.opacity = '1';
+                        candidateCard.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+                
+                // Show results container
+                elements.resultsContainer.classList.remove('hidden');
+                
+                // Add to chat history
+                addToChatHistory(query, candidates.length);
+            }
+
+            function createCandidateCard(candidate) {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'bg-white rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-300 opacity-0 transform translate-y-4';
+                cardDiv.style.transition = 'all 0.3s ease-out';
+                
+                cardDiv.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-4">
+                            <!-- Professional headshot of ${candidate.title} -->
+                            <img src="${candidate.avatar}" alt="${candidate.name}" class="w-16 h-16 rounded-full object-cover" data-mock-image="true">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <h3 class="text-lg font-semibold text-text-primary" data-bind="candidate.name">${candidate.name}</h3>
+                                    ${candidate.isTop ? '<span class="px-2 py-1 bg-success text-white text-xs rounded-full font-medium">TOP</span>' : ''}
+                                </div>
+                                <p class="text-text-secondary mb-3" data-bind="candidate.title">${candidate.title}</p>
+                                
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary mb-4">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span data-bind="candidate.location">${candidate.location}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-briefcase"></i>
+                                        <span data-bind="candidate.experience">${candidate.experience}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-phone"></i>
+                                        <span data-bind="candidate.phone">${candidate.phone}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    ${candidate.skills.map(skill => `
+                                        <span class="px-2 py-1 bg-gray-100 text-text-secondary text-xs rounded-md">${skill}</span>
+                                    `).join('')}
+                                </div>
+                                
+                                <button class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition-colors" data-event="click:unlockProfile" data-candidate-id="${candidate.id}">
+                                    Unlock Full Profile & Resume
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-end space-y-2">
+                            <button class="p-2 text-text-secondary hover:text-text-primary transition-colors" data-event="click:saveCandidate" data-candidate-id="${candidate.id}">
+                                <i class="far fa-bookmark text-lg"></i>
+                            </button>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-success font-semibold">${candidate.matchScore}%</span>
+                                <span class="text-xs text-text-secondary">match</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                return cardDiv;
+            }
+
+            function addToChatHistory(query, resultCount) {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'p-3 hover:bg-accent rounded-lg cursor-pointer transition-colors';
+                historyItem.innerHTML = `
+                    <p class="text-sm font-medium text-text-primary truncate">${query}</p>
+                    <p class="text-xs text-text-secondary">${resultCount} results • Just now</p>
+                `;
+                
+                // Add to top of history
+                elements.chatHistory.insertBefore(historyItem, elements.chatHistory.firstChild);
+            }
+
+            function handleNewChat() {
+                // Reset chat state
+                chatState = { messages: [], isLoading: false, currentResults: [] };
+                
+                // Clear UI
+                elements.messagesContainer.innerHTML = '';
+                elements.resultsContainer.classList.add('hidden');
+                elements.welcomeState.style.display = 'block';
+                elements.queryInput.value = '';
+                
+                // Focus on input
+                elements.queryInput.focus();
+            }
+
+            // @FUNCTIONALITY: This could integrate with actual Hugging Face API for NLP processing
+            // @FUNCTIONALITY: Resume similarity matching using embeddings (SBERT, FAISS)
+            // @FUNCTIONALITY: Real-time candidate database querying and ranking
+
+            // Event delegation for dynamically created elements
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('[data-event*="unlockProfile"]')) {
+                    const candidateId = e.target.getAttribute('data-candidate-id');
+                    // TODO: Implement profile unlock functionality
+                    alert(`Unlocking profile for candidate ID: ${candidateId}`);
+                }
+                
+                if (e.target.matches('[data-event*="saveCandidate"]') || e.target.closest('[data-event*="saveCandidate"]')) {
+                    const button = e.target.matches('[data-event*="saveCandidate"]') ? e.target : e.target.closest('[data-event*="saveCandidate"]');
+                    const candidateId = button.getAttribute('data-candidate-id');
+                    const icon = button.querySelector('i');
+                    
+                    // Toggle bookmark state
+                    if (icon.classList.contains('far')) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        button.classList.add('text-primary');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        button.classList.remove('text-primary');
+                    }
+                }
+            });
+
+            // Initialize the application
+            init();
+
+            // Auto-focus on input when page loads
+            elements.queryInput.focus();
+        })();
+    </script>
+</body>
+</html>

@@ -17,7 +17,7 @@ export default function Sidebar({ onNewChat, onSessionSelect, currentSession }: 
   });
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-full md:w-64 bg-white border-r border-gray-200 flex flex-col h-48 md:h-full">
       <div className="p-4 space-y-3">
         <Button
           onClick={onNewChat}

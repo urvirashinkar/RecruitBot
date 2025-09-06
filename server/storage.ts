@@ -115,6 +115,8 @@ export class MemStorage implements IStorage {
       ...insertCandidate,
       id,
       createdAt: new Date(),
+      matchScore: insertCandidate.matchScore || null,
+      avatar: insertCandidate.avatar || null,
     };
     this.candidates.set(id, candidate);
     return candidate;
@@ -169,6 +171,7 @@ export class MemStorage implements IStorage {
       ...insertMessage,
       id,
       createdAt: new Date(),
+      sessionId: insertMessage.sessionId || null,
     };
     this.messages.set(id, message);
     return message;

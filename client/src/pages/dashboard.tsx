@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="flex h-[calc(100vh-80px)]">
+      <div className="flex flex-col md:flex-row h-[calc(100vh-80px)]">
         <Sidebar 
           onNewChat={handleNewChat}
           onSessionSelect={handleSessionSelect}

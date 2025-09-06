@@ -11,7 +11,7 @@ export const candidates = pgTable("candidates", {
   experience: text("experience").notNull(),
   phone: text("phone").notNull(),
   email: text("email").notNull(),
-  skills: jsonb("skills").notNull().$type<string[]>(),
+  skills: text("skills").array().notNull(),
   resume: text("resume").notNull(),
   matchScore: integer("match_score").default(0),
   avatar: text("avatar"),
@@ -21,7 +21,7 @@ export const candidates = pgTable("candidates", {
 export const chatSessions = pgTable("chat_sessions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   query: text("query").notNull(),
-  results: jsonb("results").notNull().$type<string[]>(),
+  results: text("results").array().notNull(),
   resultCount: integer("result_count").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });

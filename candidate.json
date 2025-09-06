@@ -1,0 +1,87 @@
+{
+  "candidate": {
+    "personal_info": {
+      "full_name": "jane Andrew",
+      "email": "john.doe@example.com",
+      "phone": "555-123-4567",
+      "linkedin": "https://linkedin.com/in/johndoe",
+      "github": "https://github.com/johndoe",
+      "portfolio": "https://johndoe.dev",
+      "address": "123 Main St, Anytown, USA",
+      "summary": "Innovative and results-driven Software Engineer with a track record of developing high-quality applications."
+    },
+    "education": [
+      {
+        "degree": "Master of Science",
+        "major": "Computer Science",
+        "university": "State University",
+        "location": "Techville, USA",
+        "start_date": "2016-09-01",
+        "end_date": "2018-05-20",
+        "gpa": "3.9"
+      }
+    ],
+    "experience": [
+      {
+        "job_title": "Senior Software Engineer",
+        "company": "FutureTech Solutions",
+        "location": "Metropolis, USA",
+        "start_date": "2020-07-15",
+        "end_date": "Present",
+        "responsibilities": [
+          "Lead a team of 5 engineers in developing a new cloud-native platform.",
+          "Architected and implemented a microservices-based system using Python and Go.",
+          "Improved application performance by 30% through code optimization and database tuning."
+        ],
+        "technologies_used": ["Python", "Go", "Kubernetes", "Docker", "PostgreSQL", "Redis"]
+      }
+    ],
+    "projects": [
+      {
+        "project_name": "Real-Time Chat Application",
+        "description": "A full-stack chat application with features like private messaging and group chats.",
+        "technologies": ["React", "Node.js", "WebSocket", "MongoDB"],
+        "link": "https://github.com/johndoe/chat-app"
+      }
+    ],
+    "skills": {
+      "technical": ["Python", "Java", "C++", "SQL", "NoSQL", "Cloud Computing"],
+      "soft": ["Leadership", "Communication", "Problem Solving", "Teamwork"],
+      "languages": ["English (Native)", "Spanish (Conversational)"]
+    },
+    "certifications": [
+      {
+        "name": "Certified Kubernetes Application Developer (CKAD)",
+        "issuing_organization": "The Linux Foundation",
+        "issue_date": "2021-08-01",
+        "expiration_date": "2024-08-01",
+        "credential_id": "CKAD-12345",
+        "credential_url": "https://certs.linuxfoundation.org/ckad-12345"
+      }
+    ],
+    "achievements": [
+      "Awarded \"Innovator of the Year\" at FutureTech Solutions in 2022.",
+      "Published a paper on distributed systems at a major tech conference."
+    ],
+    "publications": [
+      {
+        "title": "A Novel Approach to Distributed Caching",
+        "journal": "Journal of Advanced Computing",
+        "date": "2021-10-15",
+        "url": "https://journal-ac.com/article/123"
+      }
+    ],
+    "additional_info": {
+      "interests": ["Hiking", "Photography", "Open Source Contribution"],
+      "volunteer_experience": [
+        {
+          "role": "Mentor",
+          "organization": "Code for All",
+          "start_date": "2019-01-01",
+          "end_date": "Present",
+          "description": "Mentoring aspiring software developers from underrepresented backgrounds."
+        }
+      ]
+    }
+  }
+}

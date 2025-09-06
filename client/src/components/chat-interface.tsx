@@ -112,11 +112,11 @@ export default function ChatInterface({ currentSession, onSessionCreated }: Chat
       <ScrollArea className="flex-1 p-6">
         <div className="max-w-4xl mx-auto">
           {!hasContent && (
-            <div className="text-center py-20">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
+            <div className="text-center py-10 md:py-20">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
                 Candidate Smart Search
               </h2>
-              <p className="text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-8 px-4">
                 Type your requirements and we'll narrow down the best profiles for you
               </p>
             </div>
