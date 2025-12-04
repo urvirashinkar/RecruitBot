@@ -10,7 +10,7 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 mongo_client = MongoClient(MONGO_URI)
 mongo_db = mongo_client[os.getenv("MONGO_DB", "recruitbot")]  # DB name
-candidates_collection = mongo_db[os.getenv("MONGO_CANDIDATES_COLLECTION", "candidates")]
+candidates_collection = mongo_db[os.getenv("MONGO_CANDIDATES_COLLECTION", "resumes")]
 
 # NeonDB (Postgres + pgvector)
 POSTGRES_URI = os.getenv("POSTGRES_URI")

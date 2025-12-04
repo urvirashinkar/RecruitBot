@@ -43,7 +43,7 @@ app.add_middleware(
 # --- DB Connections ---
 MONGO_URI = os.getenv("MONGO_URI")
 MONGO_DB = os.getenv("MONGO_DB")
-MONGO_CANDIDATES_COLLECTION = os.getenv("MONGO_CANDIDATES_COLLECTION", "candidates")
+MONGO_CANDIDATES_COLLECTION = os.getenv("MONGO_CANDIDATES_COLLECTION", "resumes")
 POSTGRES_URI = os.getenv("POSTGRES_URI")
 
 mongo_client = MongoClient(MONGO_URI)

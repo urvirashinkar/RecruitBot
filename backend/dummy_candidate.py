@@ -10,7 +10,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 MONGO_URI = os.getenv("MONGO_URI")
 MONGO_DB = os.getenv("MONGO_DB")
-MONGO_CANDIDATES_COLLECTION = os.getenv("MONGO_CANDIDATES_COLLECTION", "candidates")
+MONGO_CANDIDATES_COLLECTION = os.getenv("MONGO_CANDIDATES_COLLECTION", "resumes")
 
 mongo_client = MongoClient(MONGO_URI)
 mongo_db = mongo_client[MONGO_DB]
@@ -19,7 +19,7 @@ candidates_col = mongo_db[MONGO_CANDIDATES_COLLECTION]
 dummy_candidates = [
     {
         "personal_info": {
-            "full_name": "Alice Smith",
+            "full_name": "Urvi2 Rashinkar",
             "email": "alice@example.com",
             "phone": "+1234567890",
             "linkedin": "https://linkedin.com/in/alicesmith",
@@ -101,7 +101,7 @@ dummy_candidates = [
     },
     {
         "personal_info": {
-            "full_name": "Bob Lee",
+            "full_name": "Aryan2 Jaisingh",
             "email": "bob@example.com",
             "phone": "+1987654321",
             "linkedin": "https://linkedin.com/in/boblee",
@@ -168,7 +168,7 @@ dummy_candidates = [
     },
     {
         "personal_info": {
-            "full_name": "Carol Zhang",
+            "full_name": "Ritu2 Rashinkar",
             "email": "carol@example.com",
             "phone": "+1122334455",
             "linkedin": "https://linkedin.com/in/carolzhang",
@@ -243,7 +243,7 @@ dummy_candidates = [
     },
     {
     "personal_info": {
-        "full_name": "David Johnson",
+        "full_name": "Malhar2 Tatooskar",
         "email": "david@example.com",
         "phone": "+1415123456",
         "linkedin": "https://linkedin.com/in/davidjohnson",
@@ -310,7 +310,7 @@ dummy_candidates = [
 },
 {
     "personal_info": {
-        "full_name": "Emma Davis",
+        "full_name": "Vijay Davis",
         "email": "emma@example.com",
         "phone": "+1987001122",
         "linkedin": "https://linkedin.com/in/emmadavis",
@@ -377,7 +377,7 @@ dummy_candidates = [
 },
 {
     "personal_info": {
-        "full_name": "Frank Miller",
+        "full_name": "Farhan Miller",
         "email": "frank@example.com",
         "phone": "+1555777888",
         "linkedin": "https://linkedin.com/in/frankmiller",
@@ -444,7 +444,7 @@ dummy_candidates = [
 },
 {
     "personal_info": {
-        "full_name": "Grace Kim",
+        "full_name": "Grishma Kim",
         "email": "grace@example.com",
         "phone": "+1222333444",
         "linkedin": "https://linkedin.com/in/gracekim",
@@ -509,7 +509,7 @@ dummy_candidates = [
 },
 {
     "personal_info": {
-        "full_name": "Henry Wilson",
+        "full_name": "Harry Wannapaa",
         "email": "henry@example.com",
         "phone": "+1333444555",
         "linkedin": "https://linkedin.com/in/henrywilson",
